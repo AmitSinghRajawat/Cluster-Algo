@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.1.3"></script>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.layout.js?2.1.3"></script>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.geom.js?2.1.3"></script>
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    <script type="text/javascript" src="majorClustAlgo.js"></script>
+    <script type="text/javascript" src="d3vizMajorClust.js"></script>
+    <style type="text/css">
+    line {
+        stroke: #000000;
+    }
+    
+    #floater {
+        /* set the width and height of the floater */
+        /* set the background image of the floater. */
+        /* you can also use background color and borders here */
+        /* set the position to fixed so that it stays in place no matter where you scroll */
+        position: fixed;
+        /* set it all the way to the right and halfway down the page */
+        left: 70%;
+        top: 10%;
+        /* bring it back to the left 40px so that you can see the graphic */
+        margin-left: -40px;
+        /* bring the graphic up half of it's height so that it is pefectly vertically centered */
+        margin-top: -71px;
+        /* set the display to block so that the entire graphic is clickable */
+        display: block;
+        /* set the z-index so high it will always be on top */
+        z-index: 99999;
+    }
+    
+    .d3-tip {
+        line-height: 1;
+        font-weight: bold;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 2px;
+    }
+    /* Creates a small triangle extender for the tooltip */
+    
+    .d3-tip:after {
+        box-sizing: border-box;
+        display: inline;
+        font-size: 10px;
+        width: 100%;
+        line-height: 1;
+        color: rgba(0, 0, 0, 0.8);
+        content: "\25BC";
+        position: absolute;
+        text-align: center;
+    }
+    /* Style northward tooltips differently */
+    
+    .d3-tip.n:after {
+        margin: -1px 0 0 0;
+        top: 100%;
+        left: 0;
+    }
+    </style>
+    <script type="text/javascript">
+    function Create2DArray(rows) {
+        var arr = [];
+
+        for (var i = 0; i < rows; i++) {
+            arr[i] = [];
+        }
+
+        return arr;
+    }
+    var temp = Create2DArray(get_docs().length)
+    var clean = [];
+
+
+    function start() {
+        document.getElementById("startButton").disabled = true;
+        document.getElementById("next").disabled = false;
+
+        for (var i = 0; i < get_docs().length; i++)
+            temp[i][0] = i;
+
+        while (flag) {
+            for (var z in clust_edges) {
+                clean = cluster(z);
+            }
+        }
+
+        visual(temp, clean);
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    var i = 0;
+    var clust = [];
+
+
+    function next_step(i) {
+        clust = cluster(i);
+
+        temp[i % get_docs().length][0] = clust_id[i % get_docs().length];
+        visual(temp, clean);
+
+        window.scrollTo(0, document.body.scrollHeight);
+
+    }
+
+    function reset() {
+        document.getElementById("startButton").disabled = false;
+        document.getElementById("next").disabled = true;
+    }
+    </script>
+</head>
+
+<body>
+    <div id="viz">
+    </div>
+    <div id="floater">
+        <h1>This is simulation of MajorClust Algorithm</h1>
+        <p>Press Start Button</p>
+        <button id="startButton" type="button" onclick="start();"> Start</button>
+        <button id="next" type="button" onclick="next_step(i++);" disabled>Next Step</button>
+        <button id="restart" type="button" onclick="reset();"> Re-Start</button>
+    </div>
+</body>
+
+</html>
